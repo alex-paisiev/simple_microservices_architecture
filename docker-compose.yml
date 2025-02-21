@@ -1,0 +1,47 @@
+services:
+  python-service:
+    build:
+      context: ./python_service
+      dockerfile: Dockerfile
+    container_name: python_service
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./python_service/app:/python_service/app
+    env_file:
+      - ./python_service/.env
+    command: ["/bin/bash", "start_backend.sh"]
+    networks:
+      - app-network
+  
+  backend-service:
+    build: 
+      context: ./backend-service
+      dockerfile: Dockerfile
+    container_name: backend-service
+    environment:
+      - FASTAPI_URL=http://python-service:5000/generate
+    ports:
+      - "4000:4000"
+    depends_on:
+      - python-service
+    networks:
+      - app-network
+
+  frontend-dashboard:
+    build:
+      context: ./frontend-dashboard
+      dockerfile: Dockerfile
+    container_name: frontend-dashboard
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend-service:4000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-service
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -8,7 +8,7 @@ Create a new `.env` in the service root directory (`python_service/`) and copy t
 
 ## Runing the project 
 
-When you are ready with the `.env` file execute in the parent directory of the project root directory 
+When you are ready with the `.env` file execute in the project root directory 
 
 ```{bash}
 docker-compose up --build

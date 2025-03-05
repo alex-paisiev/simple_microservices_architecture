@@ -21,6 +21,7 @@ router = APIRouter()
 )
 async def generate_text(request: PromptRequest) -> GenerateResponse:
     if not request.prompt:
+        LOGGER.error("No prompt provided. Please provide a prompt.")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No prompt provided. Please provide a prompt.",
@@ -38,7 +39,7 @@ async def generate_text(request: PromptRequest) -> GenerateResponse:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred while processing your request with OpenAI.",
         )
-
+    LOGGER.info("Not using LLM API. Generating reversed string.")
     result = reverse_string(request.prompt)
     LOGGER.info(f"Generated text (reversed string): {result}")
     return GenerateResponse(status_code=status.HTTP_200_OK, result=result)
